@@ -1,6 +1,6 @@
 Tic Tac Toe Project
 Overview
-This project is a simple implementation of the classic Tic Tac Toe game, currently in Stage 2. It allows two players to play against each other on a grid of variable size (3x3, 4x4, 5x5).
+This project is a simple implementation of the classic Tic Tac Toe game, currently in Stage 1. It allows two players to play against each other on a grid of variable size (3x3, 4x4, 5x5).
 
 Features
 Variable Grid Size: The game supports boards of sizes 3x3, 4x4, and 5x5.
@@ -36,7 +36,4 @@ Score Tracking: Add functionality to track and display player scores.
 
 Multiplayer Mode: Develop a feature for online multiplayer.
 
-Contributing
-Contributions are welcome! If you have ideas for new features or improvements, feel free to submit a pull request.
-
-This README provides a basic structure and can be expanded based on your project's specific needs and future plans.
+This README provides a basic structure.
