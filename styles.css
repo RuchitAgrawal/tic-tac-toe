@@ -1,0 +1,105 @@
+:root {
+    --bg-color: #f7f7f7; /* Light background */
+    --text-color: #2d3436;
+    --primary: #6c5ce7; /* Purple */
+    --secondary: #a8a5e6; /* Light purple */
+    --cell-size: 80px;
+    --win-color: #34c759; /* Green for winning row */
+}
+
+[data-theme="dark"] {
+    --bg-color: #2d3436; /* Dark background */
+    --text-color: #f0f2f5;
+    --primary: #8a7cff; /* Darker purple */
+    --secondary: #58548b; /* Darker light purple */
+    --win-color: #4CAF50; /* Darker green for winning row */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: linear-gradient(to bottom right, #f7f7f7, #d9d9d9); /* Gradient background */
+}
+
+[data-theme="dark"] {
+    background-image: linear-gradient(to bottom right, #2d3436, #333);
+}
+
+.container {
+    padding: 2rem;
+    text-align: center;
+}
+
+.controls {
+    margin: 1rem 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.board {
+    display: grid;
+    gap: 5px;
+    margin: 2rem auto;
+    background: var(--secondary);
+    padding: 5px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cell:hover {
+    background: rgba(108, 92, 231, 0.1);
+}
+
+.cell.x { color: #ff7675; }
+.cell.o { color: #74b9ff; }
+
+.cell.winning {
+    background-color: var(--win-color);
+    color: white;
+}
+
+.status {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    font-weight: bold;
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+}
