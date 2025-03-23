@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Tic Tac Toe</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #2d3436;
+            --primary: #6c5ce7;
+            --secondary: #a8a5e6;
+            --cell-size: 80px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #2d3436;
+            --text-color: #f0f2f5;
+            --primary: #8a7cff;
+            --secondary: #58548b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .controls {
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .board {
+            display: grid;
+            gap: 5px;
+            margin: 2rem auto;
+            background: var(--secondary);
+            padding: 5px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cell:hover {
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .cell.x { color: #ff7675; }
+        .cell.o { color: #74b9ff; }
+
+        .status {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+        <h1>Tic Tac Toe</h1>
+        <div class="controls">
+            <select id="sizeSelect" onchange="createBoard()">
+                <option value="3">3x3</option>
+                <option value="4">4x4</option>
+                <option value="5">5x5</option>
+            </select>
+            <button onclick="resetGame()">New Game</button>
+        </div>
+        <div class="status" id="status">Player X's turn</div>
+        <div class="board" id="board"></div>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        let cells = [];
+        let size = 3;
+
+        function createBoard() {
+            size = parseInt(document.getElementById('sizeSelect').value);
+            const board = document.getElementById('board');
+            board.style.gridTemplateColumns = `repeat(${size}, var(--cell-size))`;
+            
+            cells = Array.from({ length: size * size }, (_, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.setAttribute('data-index', i);
+                cell.addEventListener('click', () => handleClick(i));
+                return cell;
+            });
+
+            board.replaceChildren(...cells);
+            currentPlayer = 'X';
+            document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+        }
+
+        function handleClick(index) {
+            const cell = cells[index];
+            if (cell.textContent || checkWin()) return;
+
+            cell.textContent = currentPlayer;
+            cell.classList.add(currentPlayer.toLowerCase());
+
+            if (checkWin()) {
+                document.getElementById('status').textContent = `Player ${currentPlayer} wins!`;
+                return;
+            }
+
+            if (cells.every(c => c.textContent)) {
+                document.getElementById('status').textContent = "It's a draw!";
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+        }
+
+        function checkWin() {
+            const winningCombinations = [];
+            const currentClass = currentPlayer.toLowerCase();
+
+            // Check rows and columns
+            for (let i = 0; i < size; i++) {
+                // Check rows
+                if (cells.slice(i * size, (i + 1) * size).every(c => c.classList.contains(currentClass))) return true;
+                // Check columns
+                if (Array.from({ length: size }, (_, j) => cells[i + j * size]).every(c => c.classList.contains(currentClass))) return true;
+            }
+
+            // Check diagonals
+            const diag1 = Array.from({ length: size }, (_, i) => cells[i * size + i]);
+            const diag2 = Array.from({ length: size }, (_, i) => cells[i * size + (size - 1 - i)]);
+            
+            return diag1.every(c => c.classList.contains(currentClass)) || 
+                   diag2.every(c => c.classList.contains(currentClass));
+        }
+
+        function resetGame() {
+            cells.forEach(c => {
+                c.textContent = '';
+                c.className = 'cell';
+            });
+            currentPlayer = 'X';
+            document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+        }
+
+        function toggleTheme() {
+            document.body.setAttribute('data-theme',
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        }
+
+        // Initialize game
+        createBoard();
+    </script>
+</body>
+</html>
