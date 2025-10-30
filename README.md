@@ -1,23 +1,37 @@
-# 🎮 Dynamic Tic Tac Toe
+# 🚀 Tic Tac Toe Ultimate: Dynamic, AI-Powered, and Feature-Rich
 
-A classic Tic Tac Toe game implemented with dynamic board sizing (3x3, 4x4, 5x5) and a modern, theme-switchable interface.
+This project is a sophisticated, full-stack Tic Tac Toe game application, showcasing modern JavaScript, advanced AI implementation, and a robust, feature-rich UI/UX design.
 
-## ✨ Features
+## 💡 Project Evolution: Improved and Extended
 
-- **Dynamic Board Size**: Play on a 3x3, 4x4, or 5x5 grid.
-- **Win Detection**: Automatically checks for wins across rows, columns, and both diagonals.
-- **Draw Detection**: Declares a draw if all cells are filled without a winner.
-- **Visual Feedback**: Highlights the winning line with a distinct color.
-- **Theme Toggle**: Supports both light mode (default) and dark mode for a modern user experience.
-- **Responsive Design**: Optimized for various screen sizes.
+| Feature            | Original Concept (Static 3x3)                      | Current Ultimate Version                                                                                                                      |
+|--------------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| **Game Modes**     | Basic single-player (vs AI) or simple two-player. | Dedicated Single Player and Two Player modes are selectable.                                                                                  |
+| **AI Difficulty**  | Simple AI (random moves) likely used.              | Expert AI (minimax() function) for 'Hard' mode, and a random AI for 'Easy' mode.                                                             |
+| **Board Size**     | Static 3x3 only.                                   | Static 3x3 (for simplicity and Minimax scope) but architecture supports dynamic scaling (Note: Code currently configured for 3x3).            |
+| **Score Tracking** | None.                                              | Persistent Scoreboard (Wins, Losses, Draws) saved to localStorage.                                                                           |
+| **Theming**        | Basic theme toggle functionality.                  | Persistent Theme preference saved to localStorage across sessions.                                                                            |
+| **Visual/UX**      | Basic styling.                                     | Modern Glassmorphism Design, Particle Background (\<canvas\>), and Confetti Effect on player win.                                            |
+| **Customization**  | Minimal.                                           | Players can choose to play as 'X' or 'O'; AI takes the opposite token.                                                                       |
+
+## ✨ Current Features
+
+- **Multi-Mode Gameplay**: Select between Single Player (vs. Computer) and Two Player modes using a control dropdown.
+- **Expert AI**: Includes a highly challenging 'Hard' mode powered by the Minimax Algorithm (expertAI()), and an 'Easy' mode (random moves).
+- **Persistent Scoreboard**: Tracks Wins, Losses (vs. AI), and Draws across sessions, with data saved using localStorage.
+- **Modern UI/UX**:
+  - **Glassmorphism Design**: Styled with vibrant, modern CSS and subtle shadowing.
+  - **Persistent Theme**: Users can toggle between light and dark themes; the preference is saved via localStorage and loads upon entry.
+  - **Visual Feedback**: Features a subtle particle background (\<canvas\>) and an engaging confetti animation upon human player wins.
+- **Customization**: Players can choose to play as 'X' or 'O', with the AI automatically taking the opposite token.
 
 ## 💻 Technologies Used
 
 | Technology | Purpose |
 |------------|---------|
-| HTML5 | Structure and Semantic Markup |
-| CSS3 | Styling, Layout, Variables (`:root`), and Theme Switching |
-| JavaScript (ES6) | Core Game Logic, State Management, and DOM Manipulation |
+| **HTML5** | Application structure, Scoreboard, and Control elements. |
+| **CSS3** | Glassmorphism Design, CSS Variables for theming, @keyframes for animations (title, cells, gradient shift), and Responsive Design. |
+| **JavaScript (ES6)** | Core Game Logic, Minimax Algorithm, localStorage for score and theme persistence, Canvas API for Particle Background, and Confetti Effect generation. |
 
 ## 🚀 Getting Started
 
@@ -31,36 +45,26 @@ You only need a modern web browser (like Chrome, Firefox, or Edge).
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/dynamic-tic-tac-toe.git
-   cd dynamic-tic-tac-toe
+   git clone https://github.com/your-username/tic-tac-toe-ultimate.git
+   cd tic-tac-toe-ultimate
    ```
 
 2. **Open in Browser**:
-   - Open the `index.html` file directly in your web browser.
-   - Alternatively, you can serve it using a simple local server extension (like Live Server for VS Code) for best performance.
+   - Open the `index.html` file directly in your web browser to launch the game.
+
+## ⚙️ Key Implementation Details
+
+The project is driven by `script.js`, which handles game state, AI, and UI interactions:
+
+- **Minimax Implementation**: The `expertAI()` function calls the recursive `minimax()` function to calculate the optimal move, ensuring the computer plays a perfect game on 'Hard' mode.
+- **Score Persistence**: Scores and the last selected theme are stored and retrieved using `localStorage.setItem()` and `localStorage.getItem()`.
+- **Canvas API**: The `initParticles()` function utilizes the HTML `\<canvas\>` element to render and animate the background particles.
+- **Theming**: The `toggleTheme()` function switches the `data-theme` attribute on the `\<body\>`, which is styled by CSS Variables in `styles.css`.
 
 ## 🕹️ How to Play
 
-1. **Start Game**: The game defaults to a 3x3 board.
-2. **Select Size**: Use the dropdown menu to select a different board size (4x4 or 5x5). Changing the size automatically starts a new game.
-3. **Take Turns**: Player X goes first. Click on any empty cell to place your mark.
-4. **Winning**: The goal is to get three (or four/five, depending on the board size) of your marks in a horizontal, vertical, or diagonal row.
-5. **Reset**: Click the "New Game" button to clear the board and restart the game at the current size.
-6. **Toggle Theme**: Use the "🌓 Toggle Theme" button in the top right corner to switch between the light and dark color schemes.
-
-## ⚙️ Game Logic Highlights
-
-The core logic is handled in `script.js`:
-
-- **`createBoard()`**: Initializes the grid structure based on the size selected in the dropdown.
-- **`handleClick(index)`**: Handles a player move, updates the cell, and then calls `checkWin()`.
-- **`checkWin()`**: Iterates dynamically through all possible rows, columns, and two main diagonals based on the current board size (`size`) to determine if the `currentPlayer` has won.
-- **`highlightWinningRow()`**: Uses a loop over the determined winning array (`winningRow`) to apply the CSS class for visual win feedback.
-
-## 🎨 Styling Details
-
-The styles are managed in `styles.css` using CSS Variables:
-
-- The `:root` selector defines the default light theme variables.
-- The `[data-theme="dark"]` attribute is used to override these variables, enabling the dark mode switch in JavaScript.
-- A subtle CSS gradient is applied to the body for a modern background effect.
+1. **Select Mode**: Choose "vs Computer" or "Two Players" using the 🎯 Mode dropdown.
+2. **Customize**: If playing vs. Computer, select your token (X or O) and the 🎚️ Difficulty.
+3. **Start/Reset**: Click the 🔄 New Game button to begin or reset the board.
+4. **Scoring**: Your scores will automatically save and load when you return to the game.
+5. **Toggle Theme**: Use the 🌓 Theme button in the top corner to switch themes permanently.
