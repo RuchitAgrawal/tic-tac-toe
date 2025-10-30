@@ -1,39 +1,66 @@
-Tic Tac Toe Project
-Overview
-This project is a simple implementation of the classic Tic Tac Toe game, currently in Stage 1. It allows two players to play against each other on a grid of variable size (3x3, 4x4, 5x5).
+# 🎮 Dynamic Tic Tac Toe
 
-Features
-Variable Grid Size: The game supports boards of sizes 3x3, 4x4, and 5x5.
+A classic Tic Tac Toe game implemented with dynamic board sizing (3x3, 4x4, 5x5) and a modern, theme-switchable interface.
 
-Theme Toggle: Users can switch between light and dark themes for better readability.
+## ✨ Features
 
-Winning Conditions: The game checks for wins in rows, columns, and diagonals.
+- **Dynamic Board Size**: Play on a 3x3, 4x4, or 5x5 grid.
+- **Win Detection**: Automatically checks for wins across rows, columns, and both diagonals.
+- **Draw Detection**: Declares a draw if all cells are filled without a winner.
+- **Visual Feedback**: Highlights the winning line with a distinct color.
+- **Theme Toggle**: Supports both light mode (default) and dark mode for a modern user experience.
+- **Responsive Design**: Optimized for various screen sizes.
 
-Draw Condition: If all cells are filled without a winner, the game ends in a draw.
+## 💻 Technologies Used
 
-Code Structure
-The project consists of the following files:
+| Technology | Purpose |
+|------------|---------|
+| HTML5 | Structure and Semantic Markup |
+| CSS3 | Styling, Layout, Variables (`:root`), and Theme Switching |
+| JavaScript (ES6) | Core Game Logic, State Management, and DOM Manipulation |
 
-index.html: The main HTML file that sets up the game board and UI.
+## 🚀 Getting Started
 
-styles.css: Contains CSS styles for layout, colors, and theme toggling.
+To run this project locally, simply follow these steps.
 
-script.js: Handles game logic, including player turns, winning conditions, and theme switching.
+### Prerequisites
 
-How to Run
-Clone the repository to your local machine.
+You only need a modern web browser (like Chrome, Firefox, or Edge).
 
-Open index.html in a web browser to start the game.
+### Installation and Setup
 
-Select the desired grid size from the options provided.
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/dynamic-tic-tac-toe.git
+   cd dynamic-tic-tac-toe
+   ```
 
-Click on cells to place your marks (X or O).
+2. **Open in Browser**:
+   - Open the `index.html` file directly in your web browser.
+   - Alternatively, you can serve it using a simple local server extension (like Live Server for VS Code) for best performance.
 
-Future Development
-AI Opponent: Implement a basic AI opponent for single-player mode.
+## 🕹️ How to Play
 
-Score Tracking: Add functionality to track and display player scores.
+1. **Start Game**: The game defaults to a 3x3 board.
+2. **Select Size**: Use the dropdown menu to select a different board size (4x4 or 5x5). Changing the size automatically starts a new game.
+3. **Take Turns**: Player X goes first. Click on any empty cell to place your mark.
+4. **Winning**: The goal is to get three (or four/five, depending on the board size) of your marks in a horizontal, vertical, or diagonal row.
+5. **Reset**: Click the "New Game" button to clear the board and restart the game at the current size.
+6. **Toggle Theme**: Use the "🌓 Toggle Theme" button in the top right corner to switch between the light and dark color schemes.
 
-Multiplayer Mode: Develop a feature for online multiplayer.
+## ⚙️ Game Logic Highlights
 
-This README provides a basic structure.
+The core logic is handled in `script.js`:
+
+- **`createBoard()`**: Initializes the grid structure based on the size selected in the dropdown.
+- **`handleClick(index)`**: Handles a player move, updates the cell, and then calls `checkWin()`.
+- **`checkWin()`**: Iterates dynamically through all possible rows, columns, and two main diagonals based on the current board size (`size`) to determine if the `currentPlayer` has won.
+- **`highlightWinningRow()`**: Uses a loop over the determined winning array (`winningRow`) to apply the CSS class for visual win feedback.
+
+## 🎨 Styling Details
+
+The styles are managed in `styles.css` using CSS Variables:
+
+- The `:root` selector defines the default light theme variables.
+- The `[data-theme="dark"]` attribute is used to override these variables, enabling the dark mode switch in JavaScript.
+- A subtle CSS gradient is applied to the body for a modern background effect.
