@@ -1,104 +1,258 @@
 let currentPlayer = 'X';
+let playerToken = 'X';
+let aiToken = 'O';
+let aiDifficulty = 'easy';
+let mode = 'single'; // 'single' or 'two'
+let board = Array(9).fill('');
 let cells = [];
-let size = 3;
+let gameActive = true;
 let winningRow = null;
 
+// --- Board Setup ---
 function createBoard() {
-    size = parseInt(document.getElementById('sizeSelect').value);
-    const board = document.getElementById('board');
-    board.style.gridTemplateColumns = `repeat(${size}, var(--cell-size))`;
-    
-    cells = Array.from({ length: size * size }, (_, i) => {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.setAttribute('data-index', i);
-        cell.addEventListener('click', () => handleClick(i));
-        return cell;
-    });
-
-    board.replaceChildren(...cells);
-    currentPlayer = 'X';
-    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
-    winningRow = null;
+  const boardElem = document.getElementById('board');
+  boardElem.innerHTML = '';
+  boardElem.style.gridTemplateColumns = `repeat(3, var(--cell-size))`;
+  cells = [];
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.setAttribute('data-index', i);
+    cell.addEventListener('click', () => handleClick(i));
+    boardElem.appendChild(cell);
+    cells.push(cell);
+  }
+  resetGame();
 }
 
+// --- Game Logic ---
 function handleClick(index) {
-    const cell = cells[index];
-    if (cell.textContent || checkWin()) return;
+  if (!gameActive || board[index]) return;
 
-    cell.textContent = currentPlayer;
-    cell.classList.add(currentPlayer.toLowerCase());
-
-    if (checkWin()) {
+  if (mode === 'single') {
+    if (currentPlayer === playerToken) {
+      makeMove(index, playerToken);
+      if (checkWin(playerToken)) {
         highlightWinningRow();
-        document.getElementById('status').textContent = `Player ${currentPlayer} wins!`;
+        endGame(`Player ${playerToken} wins!`);
         return;
-    }
-
-    if (cells.every(c => c.textContent)) {
-        document.getElementById('status').textContent = "It's a draw!";
+      }
+      if (board.every(cell => cell)) {
+        endGame("It's a draw!");
         return;
+      }
+      currentPlayer = aiToken;
+      setTimeout(aiMove, 400);
     }
-
+  } else {
+    makeMove(index, currentPlayer);
+    if (checkWin(currentPlayer)) {
+      highlightWinningRow();
+      endGame(`Player ${currentPlayer} wins!`);
+      return;
+    }
+    if (board.every(cell => cell)) {
+      endGame("It's a draw!");
+      return;
+    }
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+    updateStatus();
+  }
 }
 
-function checkWin() {
-    const winningCombinations = [];
-    const currentClass = currentPlayer.toLowerCase();
+function makeMove(index, token) {
+  board[index] = token;
+  cells[index].textContent = token;
+  cells[index].classList.add(token.toLowerCase());
+}
 
-    // Check rows and columns
-    for (let i = 0; i < size; i++) {
-        // Check rows
-        if (cells.slice(i * size, (i + 1) * size).every(c => c.classList.contains(currentClass))) {
-            winningRow = cells.slice(i * size, (i + 1) * size);
-            return true;
+function aiMove() {
+  let move;
+  if (aiDifficulty === 'easy') {
+    move = dumbAI();
+  } else {
+    move = expertAI();
+  }
+  makeMove(move, aiToken);
+  if (checkWin(aiToken)) {
+    highlightWinningRow();
+    endGame(`Computer (${aiToken}) wins!`);
+    return;
+  }
+  if (board.every(cell => cell)) {
+    endGame("It's a draw!");
+    return;
+  }
+  currentPlayer = playerToken;
+  updateStatus();
+}
+
+// --- AI Algorithms ---
+function dumbAI() {
+  let empty = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
+  return empty[Math.floor(Math.random() * empty.length)];
+}
+
+function expertAI() {
+  function minimax(newBoard, depth, isMaximizing) {
+    let winner = getWinner(newBoard);
+    if (winner === aiToken) return { score: 10 - depth };
+    if (winner === playerToken) return { score: depth - 10 };
+    if (newBoard.every(cell => cell)) return { score: 0 };
+
+    let best;
+    if (isMaximizing) {
+      best = { score: -Infinity };
+      newBoard.forEach((cell, i) => {
+        if (!cell) {
+          newBoard[i] = aiToken;
+          let result = minimax(newBoard, depth + 1, false);
+          newBoard[i] = '';
+          if (result.score > best.score) {
+            best = { score: result.score, index: i };
+          }
         }
-        // Check columns
-        if (Array.from({ length: size }, (_, j) => cells[i + j * size]).every(c => c.classList.contains(currentClass))) {
-            winningRow = Array.from({ length: size }, (_, j) => cells[i + j * size]);
-            return true;
+      });
+    } else {
+      best = { score: Infinity };
+      newBoard.forEach((cell, i) => {
+        if (!cell) {
+          newBoard[i] = playerToken;
+          let result = minimax(newBoard, depth + 1, true);
+          newBoard[i] = '';
+          if (result.score < best.score) {
+            best = { score: result.score, index: i };
+          }
         }
+      });
     }
+    return best;
+  }
+  return minimax([...board], 0, true).index;
+}
 
-    // Check diagonals
-    const diag1 = Array.from({ length: size }, (_, i) => cells[i * size + i]);
-    const diag2 = Array.from({ length: size }, (_, i) => cells[i * size + (size - 1 - i)]);
-    
-    if (diag1.every(c => c.classList.contains(currentClass))) {
-        winningRow = diag1;
-        return true;
+// --- Win Logic ---
+function checkWin(token) {
+  const winPatterns = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  for (let pattern of winPatterns) {
+    if (pattern.every(i => board[i] === token)) {
+      winningRow = pattern;
+      return true;
     }
-    if (diag2.every(c => c.classList.contains(currentClass))) {
-        winningRow = diag2;
-        return true;
-    }
+  }
+  return false;
+}
 
-    return false;
+function getWinner(b) {
+  const winPatterns = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  for (let pattern of winPatterns) {
+    if (b[pattern[0]] && b[pattern[0]] === b[pattern[1]] && b[pattern[1]] === b[pattern[2]]) {
+      return b[pattern[0]];
+    }
+  }
+  return null;
 }
 
 function highlightWinningRow() {
-    if (winningRow) {
-        winningRow.forEach(cell => cell.classList.add('winning'));
+  if (winningRow) {
+    winningRow.forEach(i => cells[i].classList.add('winning'));
+  }
+}
+
+function endGame(message) {
+  gameActive = false;
+  document.getElementById('status').textContent = message;
+}
+
+function updateStatus() {
+  if (!gameActive) return;
+  if (mode === 'single') {
+    if (currentPlayer === playerToken) {
+      document.getElementById('status').textContent = `Your turn (${playerToken})`;
+    } else {
+      document.getElementById('status').textContent = `Computer's turn (${aiToken})`;
+    }
+  } else {
+    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+  }
+}
+
+// --- Reset and UI ---
+function resetGame() {
+  board = Array(9).fill('');
+  cells.forEach(cell => {
+    cell.textContent = '';
+    cell.className = 'cell';
+  });
+  gameActive = true;
+  winningRow = null;
+  currentPlayer = playerToken;
+  updateStatus();
+  if (mode === 'single' && aiToken === 'X') {
+    // If AI is X, let AI start
+    currentPlayer = aiToken;
+    setTimeout(aiMove, 400);
+  }
+}
+
+// --- Theme ---
+// function toggleTheme() {
+//   document.body.setAttribute('data-theme',
+//     document.body.getAttribute('data-theme') === 'dark' ? null : 'dark'
+//   );
+// }
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'dark') {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
     }
 }
 
-function resetGame() {
-    cells.forEach(c => {
-        c.textContent = '';
-        c.className = 'cell';
-    });
-    currentPlayer = 'X';
-    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
-    winningRow = null;
-}
+// Load saved theme preference
+window.onload = function() {
+    document.getElementById('difficultyLabel').style.display = '';
+    createBoard();
+    
+    // Load theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+};
+////////
 
-function toggleTheme() {
-    document.body.setAttribute('data-theme',
-        document.body.getAttribute('data-theme') === 'dark' ? null : 'dark'
-    );
-}
+// --- Controls ---
+document.getElementById('modeSelect').addEventListener('change', function() {
+  mode = this.value;
+  document.getElementById('difficultyLabel').style.display = (mode === 'single') ? '' : 'none';
+  resetGame();
+});
 
-// Initialize game
-createBoard();
+document.getElementById('tokenSelect').addEventListener('change', function() {
+  playerToken = this.value;
+  aiToken = playerToken === 'X' ? 'O' : 'X';
+  resetGame();
+});
+
+document.getElementById('difficultySelect').addEventListener('change', function() {
+  aiDifficulty = this.value;
+  resetGame();
+});
+
+// --- Initial Setup ---
+window.onload = function() {
+  document.getElementById('difficultyLabel').style.display = '';
+  createBoard();
+};

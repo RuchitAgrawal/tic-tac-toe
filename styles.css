@@ -1,21 +1,21 @@
 :root {
-    --bg-color: #f7f7f7; /* Light background */
+    --bg-color: #f7f7f7;
     --text-color: #2d3436;
-    --primary: #6c5ce7; /* Purple */
-    --secondary: #a8a5e6; /* Light purple */
+    --primary: #6c5ce7;
+    --secondary: #a8a5e6;
     --cell-size: 80px;
-    --win-color: #34c759; /* Green for winning row */
-}
-
-[data-theme="dark"] {
-    --bg-color: #2d3436; /* Dark background */
+    --win-color: #34c759;
+  }
+  
+  [data-theme="dark"] {
+    --bg-color: #2d3436;
     --text-color: #f0f2f5;
-    --primary: #8a7cff; /* Darker purple */
-    --secondary: #58548b; /* Darker light purple */
-    --win-color: #4CAF50; /* Darker green for winning row */
-}
-
-body {
+    --primary: #8a7cff;
+    --secondary: #58548b;
+    --win-color: #4CAF50;
+  }
+  
+  body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -25,26 +25,27 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(to bottom right, #f7f7f7, #d9d9d9); /* Gradient background */
-}
-
-[data-theme="dark"] {
+    background-image: linear-gradient(to bottom right, #f7f7f7, #d9d9d9);
+  }
+  
+  [data-theme="dark"] {
     background-image: linear-gradient(to bottom right, #2d3436, #333);
-}
-
-.container {
+  }
+  
+  .container {
     padding: 2rem;
     text-align: center;
-}
-
-.controls {
+  }
+  
+  .controls {
     margin: 1rem 0;
     display: flex;
     gap: 1rem;
     justify-content: center;
-}
-
-button {
+    flex-wrap: wrap;
+  }
+  
+  button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 8px;
@@ -52,13 +53,13 @@ button {
     color: white;
     cursor: pointer;
     transition: transform 0.2s ease;
-}
-
-button:hover {
+  }
+  
+  button:hover {
     transform: translateY(-2px);
-}
-
-.board {
+  }
+  
+  .board {
     display: grid;
     gap: 5px;
     margin: 2rem auto;
@@ -66,9 +67,11 @@ button:hover {
     padding: 5px;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.cell {
+    grid-template-columns: repeat(3, var(--cell-size));
+    width: fit-content;
+  }
+  
+  .cell {
     width: var(--cell-size);
     height: var(--cell-size);
     background: var(--bg-color);
@@ -78,28 +81,81 @@ button:hover {
     font-size: 2rem;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.cell:hover {
+    user-select: none;
+  }
+  
+  .cell:hover {
     background: rgba(108, 92, 231, 0.1);
-}
-
-.cell.x { color: #ff7675; }
-.cell.o { color: #74b9ff; }
-
-.cell.winning {
+  }
+  
+  .cell.x { color: #ff7675; }
+  .cell.o { color: #74b9ff; }
+  
+  .cell.winning {
     background-color: var(--win-color);
     color: white;
-}
-
-.status {
+  }
+  
+  .status {
     font-size: 1.2rem;
     margin: 1rem 0;
     font-weight: bold;
-}
-
-.theme-toggle {
+  }
+  
+  /* .theme-toggle {
     position: fixed;
     top: 1rem;
+    right: 2rem;
+    background: var(--primary);
+    color: rgb(12, 2, 2);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+   */
+   .theme-toggle {
+    position: fixed;
+    top: 1.5rem;
     right: 1rem;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+  }
+  
+  .theme-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;   /* smaller circle */
+    height: 36px;  /* smaller circle */
+    background: #6c5ce7; /* your purple */
+    border-radius: 50%;
+    font-size: 1.2rem;    /* smaller symbol */
+    color: white;
+    margin-bottom: 0.3em;
+  }
+  
+  .theme-toggle-text {
+    font-size: 1rem;
+    text-align: center;
+    color: #222; /* default for light theme */
+    white-space: nowrap;
+  }
+  
+  /* DARK THEME: Make text white in dark mode */
+  body.dark-theme .theme-toggle-text,
+  [data-theme="dark"] .theme-toggle-text {
+    color: #fff;
+  }
+  
+  
