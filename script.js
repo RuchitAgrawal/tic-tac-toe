@@ -8,6 +8,13 @@ let cells = [];
 let gameActive = true;
 let winningRow = null;
 
+// Score tracking
+let scores = {
+  player: 0,
+  ai: 0,
+  draws: 0
+};
+
 // --- Board Setup ---
 function createBoard() {
   const boardElem = document.getElementById('board');
@@ -170,6 +177,19 @@ function highlightWinningRow() {
 function endGame(message) {
   gameActive = false;
   document.getElementById('status').textContent = message;
+  
+  // Update scores
+  if (message.includes('Player')) {
+    scores.player++;
+    updateScoreDisplay();
+    createConfetti();
+  } else if (message.includes('Computer')) {
+    scores.ai++;
+    updateScoreDisplay();
+  } else if (message.includes('draw')) {
+    scores.draws++;
+    updateScoreDisplay();
+  }
 }
 
 function updateStatus() {
@@ -220,18 +240,6 @@ function toggleTheme() {
     }
 }
 
-// Load saved theme preference
-window.onload = function() {
-    document.getElementById('difficultyLabel').style.display = '';
-    createBoard();
-    
-    // Load theme from localStorage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-    }
-};
-////////
 
 // --- Controls ---
 document.getElementById('modeSelect').addEventListener('change', function() {
@@ -251,8 +259,118 @@ document.getElementById('difficultySelect').addEventListener('change', function(
   resetGame();
 });
 
+// --- Score Management ---
+function updateScoreDisplay() {
+  document.getElementById('playerScore').textContent = scores.player;
+  document.getElementById('aiScore').textContent = scores.ai;
+  document.getElementById('drawScore').textContent = scores.draws;
+  
+  // Save scores to localStorage
+  localStorage.setItem('tictactoe-scores', JSON.stringify(scores));
+}
+
+function loadScores() {
+  const savedScores = localStorage.getItem('tictactoe-scores');
+  if (savedScores) {
+    scores = JSON.parse(savedScores);
+    updateScoreDisplay();
+  }
+}
+
+// --- Particle Animation ---
+function initParticles() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  const particles = [];
+  const particleCount = 50;
+  
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
+      this.opacity = Math.random() * 0.5 + 0.2;
+    }
+    
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      
+      if (this.x > canvas.width) this.x = 0;
+      if (this.x < 0) this.x = canvas.width;
+      if (this.y > canvas.height) this.y = 0;
+      if (this.y < 0) this.y = canvas.height;
+    }
+    
+    draw() {
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+  
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+  
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+
+// --- Confetti Effect ---
+function createConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  
+  const colors = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#a8a5e6', '#51cf66', '#ff6348', '#f368e0'];
+  
+  for (let i = 0; i < 100; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.top = '-10px';
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(confetti);
+  }
+  
+  setTimeout(() => {
+    container.innerHTML = '';
+  }, 5000);
+}
+
 // --- Initial Setup ---
 window.onload = function() {
   document.getElementById('difficultyLabel').style.display = '';
   createBoard();
+  initParticles();
+  loadScores();
+  
+  // Load theme from localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+  }
 };

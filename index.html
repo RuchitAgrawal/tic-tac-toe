@@ -2,42 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tic Tac Toe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 Tic Tac Toe Game</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button> -->
+  <!-- Particle Background -->
+  <canvas id="particles"></canvas>
+  
+  <!-- Theme Toggle -->
   <button class="theme-toggle" onclick="toggleTheme()">
     <span class="theme-toggle-icon">🌓</span>
-    <span class="theme-toggle-text">Toggle Theme</span>
+    <span class="theme-toggle-text">Theme</span>
   </button>  
   
   <div class="container">
-    <h1>Tic Tac Toe</h1>
+    <h1 class="game-title">
+      <span class="title-emoji">🎮</span>
+      Tic Tac Toe
+      <span class="title-emoji">🎮</span>
+    </h1>
+    
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+      <div class="score-item">
+        <div class="score-label">🏆 Wins</div>
+        <div class="score-value" id="playerScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">🤝 Draws</div>
+        <div class="score-value" id="drawScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">💀 Losses</div>
+        <div class="score-value" id="aiScore">0</div>
+      </div>
+    </div>
+    
     <div class="controls">
-      <label>Game Mode:
+      <label>
+        <span class="label-text">🎯 Mode</span>
         <select id="modeSelect">
-          <option value="single">Single Player</option>
-          <option value="two">Two Player</option>
+          <option value="single">vs Computer</option>
+          <option value="two">Two Players</option>
         </select>
       </label>
-      <label>Play as:
+      <label>
+        <span class="label-text">⚔️ Play as</span>
         <select id="tokenSelect">
           <option value="X">X</option>
           <option value="O">O</option>
         </select>
       </label>
-      <label id="difficultyLabel">AI Difficulty:
+      <label id="difficultyLabel">
+        <span class="label-text">🎚️ Difficulty</span>
         <select id="difficultySelect">
           <option value="easy">Easy</option>
           <option value="hard">Hard</option>
         </select>
       </label>
-      <button onclick="resetGame()">New Game</button>
+      <button class="new-game-btn" onclick="resetGame()">
+        <span>🔄</span> New Game
+      </button>
     </div>
+    
     <div id="status" class="status"></div>
     <div id="board" class="board"></div>
   </div>
+  
+  <!-- Confetti Container -->
+  <div id="confetti-container"></div>
+  
   <script src="script.js"></script>
 </body>
 </html>
