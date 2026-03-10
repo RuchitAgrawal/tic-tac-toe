@@ -68,3 +68,58 @@ The project is driven by `script.js`, which handles game state, AI, and UI inter
 3. **Start/Reset**: Click the 🔄 New Game button to begin or reset the board.
 4. **Scoring**: Your scores will automatically save and load when you return to the game.
 5. **Toggle Theme**: Use the 🌓 Theme button in the top corner to switch themes permanently.
+
+---
+
+## ♾️ v2.0 Update — Infinite / Dynamic Mode
+
+### What's New
+
+This update extends the project with a new **Infinite Game Type** and a full visual refresh. The core game logic, AI engine, and existing features remain untouched — everything below is purely additive.
+
+#### New Control: 🎮 Game Type
+
+The controls bar now has a **Game Type** dropdown placed before the existing Opponent and Difficulty selectors:
+
+| Dropdown | Options |
+|---|---|
+| 🎮 **Game Type** | Normal \| ♾️ Infinite |
+| 🎯 **Opponent** | vs Computer \| vs Player |
+| 🎚️ **Difficulty** | Easy \| Hard *(vs Computer only)* |
+
+#### ♾️ Infinite Mode Rules
+
+- Each player may have **at most 3 pieces** on the board at any time.
+- When a player places their **4th piece**, their **oldest piece vanishes** first, then the new piece is placed.
+- A **draw is impossible** — the board never permanently fills up; the game only ends by a 3-in-a-row win.
+- The piece about to vanish is highlighted with an **orange pulsing glow** as a warning before each move.
+- Vanishing plays a **red-flash + shake + dissolve animation** so the removal is visually unmistakable.
+
+#### Infinite Mode AI
+
+The `expertAI()` function branches into a dedicated `expertAIInfinite()` path when Infinite mode is active. It runs a depth-limited minimax (depth ≤ 6) that **simulates the vanishing rule during evaluation** — so the Hard AI accounts for disappearing pieces when choosing its move.
+
+```js
+// Simplified flow in expertAI():
+if (gameType === 'infinite') {
+  return expertAIInfinite(); // vanish-aware minimax
+}
+// else: original unlimited minimax (Normal mode)
+```
+
+### Visual Refresh
+
+| Area | Change |
+|---|---|
+| **Light theme** | Soft cornflower-to-steel-blue gradient (`#4a6fa5 → #6e9fd4`); components use 28% white glass so they're clearly visible |
+| **Dark theme** | Pushed to near-black midnight navy (`#060b14 → #0e1a30`) with 60% shadow depth |
+| **X colour** | `#f9c846` — warm amber gold with double-layer glow |
+| **O colour** | `#a78bfa` — soft periwinkle lavender with double-layer glow |
+
+### New CSS Classes
+
+| Class | Purpose |
+|---|---|
+| `.cell.next-vanish` | Orange pulsing border — marks the oldest piece that will vanish on the next move |
+| `.cell.vanishing` | Red flash + shake + scale-to-zero dissolve — plays on the piece being removed |
+

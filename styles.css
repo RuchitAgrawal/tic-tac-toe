@@ -1,29 +1,29 @@
 /* ===== CSS Variables ===== */
 :root {
-  --bg-gradient-1: #667eea;
-  --bg-gradient-2: #764ba2;
-  --bg-gradient-3: #f093fb;
+  --bg-gradient-1: #4a6fa5;
+  --bg-gradient-2: #5a83b8;
+  --bg-gradient-3: #6e9fd4;
   --text-color: #ffffff;
-  --primary: #6c5ce7;
-  --secondary: #a8a5e6;
+  --primary: #2d62c8;
+  --secondary: #6a9fd8;
   --cell-size: 100px;
   --win-color: #ffd93d;
-  --glass-bg: rgba(255, 255, 255, 0.15);
-  --glass-border: rgba(255, 255, 255, 0.25);
-  --shadow: rgba(0, 0, 0, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --shadow: rgba(0, 0, 0, 0.22);
 }
 
 [data-theme="dark"] {
-  --bg-gradient-1: #1a1a2e;
-  --bg-gradient-2: #16213e;
-  --bg-gradient-3: #0f3460;
-  --text-color: #eaeaea;
-  --primary: #8a7cff;
-  --secondary: #58548b;
+  --bg-gradient-1: #060b14;
+  --bg-gradient-2: #0a1120;
+  --bg-gradient-3: #0e1a30;
+  --text-color: #dde4f0;
+  --primary: #7a8fff;
+  --secondary: #3d4a6e;
   --win-color: #ffd93d;
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --shadow: rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --shadow: rgba(0, 0, 0, 0.6);
 }
 
 /* ===== Global Styles ===== */
@@ -348,14 +348,14 @@ body {
 }
 
 .cell.x {
-  color: #ff6b6b;
-  text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+  color: #f9c846;
+  text-shadow: 0 0 15px rgba(249, 200, 70, 0.8), 0 0 30px rgba(249, 200, 70, 0.4);
   animation: cellPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .cell.o {
-  color: #4ecdc4;
-  text-shadow: 0 0 15px rgba(78, 205, 196, 0.7);
+  color: #a78bfa;
+  text-shadow: 0 0 15px rgba(167, 139, 250, 0.8), 0 0 30px rgba(167, 139, 250, 0.4);
   animation: cellPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
@@ -391,6 +391,68 @@ body {
   0%, 100% { box-shadow: 0 0 25px var(--win-color); }
   50% { box-shadow: 0 0 40px var(--win-color); }
 }
+
+/* ===== Infinite Mode — Next-to-Vanish Warning ===== */
+.cell.next-vanish {
+  border-color: #ff9f43 !important;
+  box-shadow: 0 0 18px rgba(255, 159, 67, 0.75), 0 0 6px rgba(255, 159, 67, 0.5) inset !important;
+  animation: vanishWarn 0.9s ease-in-out infinite !important;
+}
+
+@keyframes vanishWarn {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 159, 67, 0.5), 0 0 4px rgba(255, 159, 67, 0.3) inset;
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 30px rgba(255, 159, 67, 0.9), 0 0 10px rgba(255, 159, 67, 0.6) inset;
+  }
+}
+
+/* ===== Infinite Mode — Vanish-out Animation ===== */
+.cell.vanishing {
+  animation: vanishOut 0.55s ease-in forwards !important;
+  pointer-events: none;
+}
+
+@keyframes vanishOut {
+  0%   {
+    transform: scale(1);
+    opacity: 1;
+    outline: 3px solid transparent;
+    background: var(--glass-bg);
+  }
+  15%  {
+    transform: scale(1.15) translateX(-4px);
+    outline: 4px solid #ff4757;
+    background: rgba(255, 71, 87, 0.25);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.8), inset 0 0 12px rgba(255, 71, 87, 0.5);
+    opacity: 1;
+  }
+  30%  {
+    transform: scale(1.1) translateX(4px);
+    outline: 4px solid #ff4757;
+    background: rgba(255, 71, 87, 0.35);
+    box-shadow: 0 0 30px rgba(255, 71, 87, 1), inset 0 0 18px rgba(255, 71, 87, 0.7);
+    opacity: 0.9;
+  }
+  50%  {
+    transform: scale(0.85) translateX(-2px);
+    outline: 3px solid #ff6b81;
+    background: rgba(255, 71, 87, 0.2);
+    opacity: 0.6;
+    filter: blur(1px);
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    filter: blur(6px);
+    outline: none;
+  }
+}
+
+
 
 /* ===== Confetti ===== */
 #confetti-container {
